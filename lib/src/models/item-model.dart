@@ -32,7 +32,7 @@ class _Workout {
   String _image;
 
   _Workout(result) {
-    _nanme = result['name'];
+    _name = result['name'];
     _date = result['date'];
     _image = result['image'];
   }
@@ -41,5 +41,5 @@ class _Workout {
 
   String get date => _date;
 
-  bool get image => _image;
+  String get image => _image;
 }
