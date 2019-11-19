@@ -9,7 +9,8 @@ class WorkoutApiProvider {
     Db db = new Db("mongodb://10.0.2.2:27017/workouts");
     await db.open();
     var workouts = db.collection('workouts');
-    final response = workouts.find();
-    return ItemModel.fromJson(json.decode(response.toString()));
+    final response = await workouts.find().toList();
+    await db.close();
+    return ItemModel.fromJson(jsonDecode(response.toString()));
   }
 }
