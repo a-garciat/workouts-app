@@ -3,7 +3,7 @@ import 'workout_api_provider.dart';
 import '../models/item_model.dart';
 
 class Repository {
-  final moviesApiProvider = WorkoutApiProvider();
+  final workoutsApiProvider = WorkoutApiProvider();
 
-  Future<ItemModel> fetchAllWorkouts() => moviesApiProvider.fetchWorkoutList();
+  Future<ItemModel> fetchAllWorkouts() => workoutsApiProvider.fetchWorkoutList();
 }

@@ -26,13 +26,13 @@ class WorkoutsList extends StatelessWidget {
 
   Widget buildList(AsyncSnapshot<ItemModel> snapshot) {
     return GridView.builder(
-        itemCount: snapshot.data.results.length,
+        itemCount: snapshot.data.workouts.length,
         gridDelegate:
         new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (BuildContext context, int index) {
           return Image.network(
-            'https://image.tmdb.org/t/p/w185${snapshot.data
-                .results[index].poster_path}',
+            '../error.png${snapshot.data
+                .workouts[index].image}',
             fit: BoxFit.cover,
           );
         });

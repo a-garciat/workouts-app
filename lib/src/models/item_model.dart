@@ -1,45 +1,36 @@
+import 'dart:convert';
+
 class ItemModel {
-  int _page;
-  int _total_results;
-  int _total_pages;
-  List<_Result> _results = [];
+  List<_Workout> _workouts = [];
 
   ItemModel.fromJson(Map<String, dynamic> parsedJson) {
-    print(parsedJson['results'].length);
-    _page = parsedJson['page'];
-    _total_results = parsedJson['total_results'];
-    _total_pages = parsedJson['total_pages'];
-    List<_Result> temp = [];
-    for (int i = 0; i < parsedJson['results'].length; i++) {
-      _Result result = _Result(parsedJson['results'][i]);
+    print(parsedJson['workouts'].length);
+    List<_Workout> temp = [];
+    for (int i = 0; i < parsedJson['_id'].length; i++) {
+      _Workout result = _Workout(parsedJson['_id'][i]);
       temp.add(result);
     }
-    _results = temp;
+    _workouts = temp;
   }
 
-  List<_Result> get results => _results;
+  List<_Workout> get workouts => _workouts;
 
-  int get total_pages => _total_pages;
-
-  int get total_results => _total_results;
-
-  int get page => _page;
 }
 
 class _Workout {
   String _name;
-  String _date;
+  String _description;
   String _image;
 
   _Workout(result) {
     _name = result['name'];
-    _date = result['date'];
+    _description = result['description'];
     _image = result['image'];
   }
 
   String get name => _name;
 
-  String get date => _date;
+  String get date => _description;
 
   String get image => _image;
 }
