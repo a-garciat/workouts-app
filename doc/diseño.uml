@@ -1,0 +1,38 @@
+@startuml
+package "Blocs"{
+	class WorkoutsBloc{
+		{field}_repository
+		{field}_workoutsFetcher
+		{method}_fetchAllWorkouts()
+		{method}_dispose()
+	}
+	class ItemModel{
+		{field}_workouts
+		{method}ItemModel.fromJson
+	}
+
+	class Workouts{
+		{field}_name
+		{field}_description
+		{field}_image
+	}
+}
+
+package "Resources"{
+
+	class Repository {
+		{field} workoutsApiProvider
+		{method}fetchAllWorkouts
+	}
+ 
+}
+package "UI" {
+
+	class WorkoutsList{
+		{method} build
+	}
+}
+Repository --> WorkoutsBloc
+WorkoutsBloc --> WorkoutsList
+
+@enduml
