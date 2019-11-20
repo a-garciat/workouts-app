@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../models/item_model.dart';
 import '../blocs/workouts_bloc.dart';
@@ -30,11 +32,9 @@ class WorkoutsList extends StatelessWidget {
         gridDelegate:
         new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (BuildContext context, int index) {
-          return Image.network(
-            '../error.png${snapshot.data
-                .workouts[index].image}',
-            fit: BoxFit.cover,
-          );
+          File file = new File("error.png");
+          return Image.file(file);
+
         });
   }
 }

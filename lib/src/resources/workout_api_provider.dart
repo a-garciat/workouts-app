@@ -11,6 +11,6 @@ class WorkoutApiProvider {
     var workouts = db.collection('workouts');
     final response = await workouts.find().toList();
     await db.close();
-    return ItemModel.fromJson(jsonDecode(response.toString()));
+    return ItemModel.fromJson(response);
   }
 }
