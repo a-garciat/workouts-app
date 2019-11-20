@@ -20,9 +20,7 @@ class ItemModel {
     }
     _workouts = temp;
   }
-
   List<_Workout> get workouts => _workouts;
-
 }
 
 class _Workout {
@@ -34,11 +32,13 @@ class _Workout {
     _name = name;
     _description = description;
     _image = image;
+
   }
 
   String get name => _name;
 
-  String get date => _description;
+  String get description => _description;
 
   String get image => _image;
-}
+
+ }

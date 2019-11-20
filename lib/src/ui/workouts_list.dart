@@ -33,30 +33,46 @@ class WorkoutsList extends StatelessWidget {
         gridDelegate:
         new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
         itemBuilder: (BuildContext context, int index) {
-          String name=snapshot.data.workouts[index].name;
-          String image=snapshot.data.workouts[index].image;
-          if (image=='') {
-          return ListTile(
-            title: Text(
-              name,
-              style: Theme.of(context).textTheme.headline,
-            ),
-            leading: Image.asset('assets/error.png'),
-            subtitle: Text(
-                'PONER FECHA AQUI',
-                style: Theme.of(context).textTheme.headline),
-          );
+          String name = snapshot.data.workouts[index].name;
+          String image = snapshot.data.workouts[index].image;
+          if (image == '') {
+            return GridTile(
+              header: InkResponse(
+                enableFeedback: true,
+                child: Text(name,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headline,
+                ),
+                //leading: Image.asset('assets/error.png'),
+                onTap: () => print(index),
+              ),
+              child: InkResponse(
+                enableFeedback: true,
+                 child:Image.asset('assets/error.png'),
+                onTap: () => print(index),
+              ),
+            );
           }
           else {
-            return ListTile(
-              title: Text(
-                name,
-                style: Theme.of(context).textTheme.headline,
+            return GridTile(
+              header: InkResponse(
+                enableFeedback: true,
+                child: Text(name,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headline,
+                ),
+                //leading: Image.asset('assets/error.png'),
+                onTap: () => print(index),
               ),
-              leading: Image.memory(base64.decode(image)),
-              subtitle: Text(
-                  'PONER FECHA AQUI',
-                  style: Theme.of(context).textTheme.headline),
+              child: InkResponse(
+                enableFeedback: true,
+                child:Image.memory(base64.decode(image)),
+                onTap: () => print(index),
+              ),
             );
           }
         });

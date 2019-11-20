@@ -2,7 +2,7 @@ import '../resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 import '../models/item_model.dart';
 
-class MoviesBloc {
+class WorkoutsBloc {
   final _repository = Repository();
   final _workoutsFetcher = PublishSubject<ItemModel>();
 
@@ -18,4 +18,4 @@ class MoviesBloc {
   }
 }
 
-final bloc = MoviesBloc();
+final bloc = WorkoutsBloc();
