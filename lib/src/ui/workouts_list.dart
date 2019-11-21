@@ -111,24 +111,10 @@ class WorkoutsList extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Container(margin: EdgeInsets.only(top: 8.0, bottom: 8.0)),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(left: 1.0, right: 1.0),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0, right: 10.0),
-                            ),
-                          ],
-                        ),
-                        Container(margin: EdgeInsets.only(top: 8.0, bottom: 8.0)),
+                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
                         Text(_workout.description),
-                        Container(margin: EdgeInsets.only(top: 8.0, bottom: 8.0)),
-                        Container(margin: EdgeInsets.only(top: 8.0, bottom: 8.0)),
-
                       ],
-                    ),
+                    //),
                   ),
                 ],
               )),
