@@ -113,12 +113,33 @@ class WorkoutsList extends StatelessWidget {
                         ),
                         Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
                         Text(_workout.description),
-                      ],
-                    //),
+                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
+                        Text("Ejercicios",style: Theme
+                            .of(context)
+                            .textTheme
+                            .headline,),
+                        ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount : _workout.exercises.length
+                            ,itemBuilder:(context, ind){
+                          return  Text(
+                            _workout.exercises[ind][0],
+                          );
+                        })
+                      ]
+                    ),
                   ),
-                ],
+                  ],
               )),
         ),
+      );
+    }
+
+    Widget _buildItem(List<String> exercise) {
+      return new ListTile(
+        title: new Text(exercise[0]),
+        subtitle: new Text(exercise[1]),
       );
     }
 

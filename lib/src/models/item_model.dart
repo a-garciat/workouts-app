@@ -15,7 +15,7 @@ class ItemModel {
       if (parsedJson[i]['image'] != '') {
         image = utf8.decode(parsedJson[i]['image'].byteList);
       }
-      Workout result = Workout(parsedJson[i]['name'],joinedDescription,image);
+      Workout result = Workout(parsedJson[i]['name'],joinedDescription,image,parsedJson[i]['exercises']);
       temp.add(result);
     }
     _workouts = temp;
@@ -27,11 +27,13 @@ class Workout {
   String _name;
   String _description;
   String _image;
+  List<dynamic> _exercises;
 
-  Workout(String name, String description, String image) {
+  Workout(String name, String description, String image, List<dynamic> exercises) {
     _name = name;
     _description = description;
     _image = image;
+    _exercises = exercises;
 
   }
 
@@ -40,5 +42,7 @@ class Workout {
   String get description => _description;
 
   String get image => _image;
+
+  List<dynamic> get exercises => _exercises;
 
  }
