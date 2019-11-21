@@ -32,10 +32,16 @@ class WorkoutsList extends StatelessWidget {
         itemCount: snapshot.data.workouts.length,
         gridDelegate:
         new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+
         itemBuilder: (BuildContext context, int index) {
+          Widget image;
           String name = snapshot.data.workouts[index].name;
-          String image = snapshot.data.workouts[index].image;
-          if (image == '') {
+          String imageData = snapshot.data.workouts[index].image;
+          if (imageData == '') {
+             image = Image.asset('assets/error.png');
+          }else{
+             image = Image.memory(base64.decode(imageData));
+          }
             return GridTile(
               header: InkResponse(
                 enableFeedback: true,
@@ -50,31 +56,61 @@ class WorkoutsList extends StatelessWidget {
               ),
               child: InkResponse(
                 enableFeedback: true,
-                 child:Image.asset('assets/error.png'),
-                onTap: () => print(index),
+                child: image,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutPage(snapshot.data.workouts[index])))
               ),
             );
-          }
-          else {
-            return GridTile(
-              header: InkResponse(
-                enableFeedback: true,
-                child: Text(name,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .headline,
-                ),
-                //leading: Image.asset('assets/error.png'),
-                onTap: () => print(index),
-              ),
-              child: InkResponse(
-                enableFeedback: true,
-                child:Image.memory(base64.decode(image)),
-                onTap: () => print(index),
-              ),
-            );
-          }
         });
   }
+}
+
+  class WorkoutPage extends StatelessWidget {
+    Workout _workout;
+  WorkoutPage( Workout workout){
+     _workout = workout;
+  }
+
+  @override
+    Widget build(BuildContext context) {
+    Widget image;
+    if(_workout.image == ''){
+      image = Image.asset('assets/error.png');
+    }else{
+      image = Image.memory(base64.decode(_workout.image));
+    }
+      return Scaffold(
+        body: SafeArea(
+          top: false,
+          bottom: false,
+          child: NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    expandedHeight: 200.0,
+                    floating: false,
+                    pinned: true,
+                    elevation: 0.0,
+                    flexibleSpace: FlexibleSpaceBar(
+                        background:  image)
+                  ),
+                ];
+              },
+              body: ListView(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(margin: EdgeInsets.only(top: 5.0)),
+                      ],
+                    ),
+                  ),
+                ],
+              )),
+        ),
+      );
+    }
+
 }

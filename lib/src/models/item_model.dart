@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 class ItemModel {
-  List<_Workout> _workouts = [];
+  List<Workout> _workouts = [];
 
   ItemModel.fromJson(List<Map<String, dynamic>> parsedJson) {
-    List<_Workout> temp = [];
+    List<Workout> temp = [];
 
     for (int i = 0; i < parsedJson.length; i++) {
       String joinedDescription = '';
@@ -15,20 +15,20 @@ class ItemModel {
       if (parsedJson[i]['image'] != '') {
         image = utf8.decode(parsedJson[i]['image'].byteList);
       }
-      _Workout result = _Workout(parsedJson[i]['name'],joinedDescription,image);
+      Workout result = Workout(parsedJson[i]['name'],joinedDescription,image);
       temp.add(result);
     }
     _workouts = temp;
   }
-  List<_Workout> get workouts => _workouts;
+  List<Workout> get workouts => _workouts;
 }
 
-class _Workout {
+class Workout {
   String _name;
   String _description;
   String _image;
 
-  _Workout(String name, String description, String image) {
+  Workout(String name, String description, String image) {
     _name = name;
     _description = description;
     _image = image;
