@@ -2,10 +2,18 @@
 {
 Lista de rutinas
 {#
-Nombre | Fecha publicación | Imagen
-Rutina 1 | 01-03-2015 | <&image>
-Rutina 2 | 25-11-2017 | <&image> 
-  "..."    |  "..." |     <&image> 
+Nombre | Imagen
+Rutina 1 | <&image>
+Rutina 2 | <&image> 
+  "..."  | <&image> 
+}
+{#
+Imagen<&image>
+Nombre
+Descripcion
+Ejercicio 1
+Ejercicio 2
+ "..."
 }
 
 }
