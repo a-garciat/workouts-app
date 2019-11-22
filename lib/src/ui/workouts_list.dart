@@ -1,11 +1,15 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import '../models/item_model.dart';
 import '../blocs/workouts_bloc.dart';
 
 class WorkoutsList extends StatelessWidget {
+
+  WorkoutsList({ @required this.workoutSelectedCallback, this.rows });
+  final ValueChanged<Workout> workoutSelectedCallback;
+  final int rows;
+
   @override
   Widget build(BuildContext context) {
     bloc.fetchAllWorkouts();
@@ -31,7 +35,7 @@ class WorkoutsList extends StatelessWidget {
     return GridView.builder(
         itemCount: snapshot.data.workouts.length,
         gridDelegate:
-        new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: rows),
 
         itemBuilder: (BuildContext context, int index) {
           Widget image;
@@ -57,7 +61,8 @@ class WorkoutsList extends StatelessWidget {
               child: InkResponse(
                 enableFeedback: true,
                 child: image,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutPage(snapshot.data.workouts[index])))
+                onTap: () => workoutSelectedCallback(snapshot.data.workouts[index])
+                //onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutPage(snapshot.data.workouts[index])))
               ),
             );
         });
@@ -65,18 +70,36 @@ class WorkoutsList extends StatelessWidget {
 }
 
   class WorkoutPage extends StatelessWidget {
-    Workout _workout;
-  WorkoutPage( Workout workout){
-     _workout = workout;
-  }
+    /*Workout _workout;
+    WorkoutPage( Workout workout){
+      _workout = workout;
+    }*/
+    WorkoutPage({@required this.workout});
+    final Workout workout;
 
   @override
     Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    if (workout == null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'No item selected!',
+            style: textTheme.headline,
+          ),
+          Text(
+            'Please select one on the left.',
+            style: textTheme.subhead,
+          ),
+        ],
+      );
+    }
     Widget image;
-    if(_workout.image == ''){
+    if(workout.image == ''){
       image = Image.asset('assets/error.png');
-    }else{
-      image = Image.memory(base64.decode(_workout.image));
+    } else {
+      image = Image.memory(base64.decode(workout.image));
     }
       return Scaffold(
         body: SafeArea(
@@ -105,14 +128,14 @@ class WorkoutsList extends StatelessWidget {
                       children: <Widget>[
                         Container(margin: EdgeInsets.only(top: 5.0)),
                         Text(
-                          _workout.name,
+                          workout.name,
                           style: TextStyle(
                             fontSize: 25.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
-                        Text(_workout.description),
+                        Text(workout.description),
                         Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
                         Text("Ejercicios",style: Theme
                             .of(context)
@@ -121,10 +144,10 @@ class WorkoutsList extends StatelessWidget {
                         ListView.builder(
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
-                            itemCount : _workout.exercises.length
+                            itemCount : workout.exercises.length
                             ,itemBuilder:(context, ind){
                           return  Text(
-                            _workout.exercises[ind][0],
+                            workout.exercises[ind][0],
                           );
                         })
                       ]
@@ -135,12 +158,65 @@ class WorkoutsList extends StatelessWidget {
         ),
       );
     }
+}
 
-    Widget _buildItem(List<String> exercise) {
-      return new ListTile(
-        title: new Text(exercise[0]),
-        subtitle: new Text(exercise[1]),
-      );
-    }
+class MasterDetailContainer extends StatefulWidget {
+  @override
+  _MasterDetailContainerState createState() =>
+      _MasterDetailContainerState();
+}
 
+class _MasterDetailContainerState extends State<MasterDetailContainer> {
+  // Track the currently selected item here. Only used for
+  // tablet layouts.
+  Workout _selectedItem;
+
+  Widget _buildMobileLayout() {
+    return WorkoutsList(rows: 2,
+
+      // Since we're on mobile, just push a new route for the
+      // item details.
+      workoutSelectedCallback: (item) {
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {return WorkoutPage(workout: item);}));
+      },
+    );
+  }
+
+  Widget _buildTabletLayout() {
+    // For tablets, return a layout that has item listing on the left
+    // and item details on the right.
+    return Row(
+      children: <Widget>[
+        Flexible(
+          flex: 1,
+          child: WorkoutsList(rows: 1,
+            // Instead of pushing a new route here, we update
+            // the currently selected item, which is a part of
+            // our state now.
+            workoutSelectedCallback: (item) {
+              setState(() {
+                _selectedItem = item;
+              });
+            },
+          ),
+        ),
+        Flexible(
+          flex: 3,
+          child: WorkoutPage(
+            // The item details just blindly accepts whichever
+            // item we throw in its way, just like before.
+            workout: _selectedItem,
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+    var useMobileLayout = shortestSide < 600;
+    if (useMobileLayout) return _buildMobileLayout();
+    else return _buildTabletLayout();
+  }
 }
