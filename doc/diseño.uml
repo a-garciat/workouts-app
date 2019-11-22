@@ -15,6 +15,7 @@ package "Blocs"{
 		{field}_name
 		{field}_description
 		{field}_image
+		{field}_exercises
 	}
 }
 
@@ -30,7 +31,12 @@ package "UI" {
 
 	class WorkoutsList{
 		{method} build
+		{method} buildList
 	}
+	
+	class WorkoutPage{
+		{field}_workout
+		{method} build
 }
 Repository --> WorkoutsBloc
 WorkoutsBloc --> WorkoutsList
