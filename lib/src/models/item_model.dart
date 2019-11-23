@@ -62,7 +62,7 @@ class Workout {
  }
 
  class ExerciseModel{
-   Exercise exercise;
+   Exercise _exercise;
   ExerciseModel.fromJson(Map<String,dynamic> exercises){
     String description = "";
     for(int i = 0; i< exercises['description'].length;i++) {
@@ -72,6 +72,8 @@ class Workout {
     if (exercises['image'] != '') {
       image = utf8.decode(exercises['image'].byteList);
     }
-    exercise = Exercise(exercises['name'], description, image);
+    _exercise = Exercise(exercises['name'], description, image);
   }
+
+  Exercise get getExercise => _exercise;
  }

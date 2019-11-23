@@ -22,12 +22,28 @@ final blocWorkouts = WorkoutsBloc();
 
 class ExercisesBloc {
   final _repository = Repository();
-  ExerciseModel _exerciseM;
-  Exercise _exercise = null;
-  Exercise get exercise => _exercise;
+  Exercise _exercisesFetcher;
+  bool _dataReady = false;
+
+  Exercise get allExercises => _exercisesFetcher;
+
+  dataReady() {
+    _dataReady=true;
+  }
+
+  dataNotReady() {
+    _dataReady=false;
+  }
+
+  bool checkReady() {
+    return _dataReady;
+  }
+
   fetchExercise(name) async{
-    _exerciseM = await _repository.fetchExercise(name);
-    _exercise = _exerciseM.exercise;
+    ExerciseModel exerciseM = await _repository.fetchExercise(name);
+    print ('FETCHED FROM REPOSITORY = ' + exerciseM.getExercise.name.toString());
+    _exercisesFetcher=exerciseM.getExercise;
+    dataReady();
   }
 
 }

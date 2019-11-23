@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import '../models/item_model.dart';
@@ -101,7 +102,15 @@ class WorkoutsList extends StatelessWidget {
     } else {
       image = Image.memory(base64.decode(workout.image));
     }
-      return Scaffold(
+    ExercisesBloc blocExercises = ExercisesBloc();
+    blocExercises.fetchExercise(workout.exercises[0][0]);
+    while (!blocExercises.checkReady()) {
+      print('Not ready yet');
+    }
+    Exercise exercise = blocExercises.allExercises;
+    print('EXERCISE FETCHED TO VIEW = ' + exercise.toString());
+
+    return Scaffold(
         body: SafeArea(
           top: false,
           bottom: false,
@@ -139,7 +148,7 @@ class WorkoutsList extends StatelessWidget {
                             iconSize: 80,
                             alignment: Alignment.centerRight,
                             icon: Icon(Icons.play_circle_filled),
-                            onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => ExercisePage(workout,0)))
+                            onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => ExercisePage(workout: workout,exercise: exercise)))
                           ),
                         ],),
                         Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
@@ -230,20 +239,14 @@ class _MasterDetailContainerState extends State<MasterDetailContainer> {
 }
 
 class ExercisePage extends StatelessWidget {
-  Workout _workout;
-  Exercise _exercise;
-  ExercisesBloc blocExercises ;
-  ExercisePage(Workout workout,int exer) {
-    blocExercises = ExercisesBloc();
-    _workout = workout;
-    blocExercises.fetchExercise(_workout.exercises[exer][0]);
-    _exercise = blocExercises.exercise;
-  }
+  ExercisePage({ @required this.workout, this.exercise});
+  final Workout workout;
+  final Exercise exercise;
 
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    if (_workout == null) {
+    if (workout == null) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -259,10 +262,10 @@ class ExercisePage extends StatelessWidget {
       );
     }
     Widget image;
-    if(_workout.image == ''){
+    if(workout.image == ''){
       image = Image.asset('assets/error.png');
     } else {
-      image = Image.memory(base64.decode(_exercise.image));
+      image = Image.memory(base64.decode(exercise.image));
     }
     return Scaffold(
       body: SafeArea(
@@ -292,7 +295,7 @@ class ExercisePage extends StatelessWidget {
                         Container(margin: EdgeInsets.only(top: 5.0)),
                         Row(children: <Widget>[
                           Text(
-                            _exercise.name,
+                            exercise.name,
                             style: TextStyle(
                               fontSize: 25.0,
                               fontWeight: FontWeight.bold,
@@ -300,7 +303,7 @@ class ExercisePage extends StatelessWidget {
                           ),
                         ],),
                         Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
-                        Text(_exercise.description),
+                        Text(exercise.description),
                         Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
                         Text("Ejercicios",style: Theme
                             .of(context)

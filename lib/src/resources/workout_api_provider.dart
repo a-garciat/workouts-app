@@ -23,6 +23,7 @@ class ExerciseApiProvider {
     var exercises = db.collection('exercises');
     final response = await exercises.findOne({"name": nombre});
     await db.close();
+    print ('FETCHED FROM DB = ' + response.toString());
     return ExerciseModel.fromJson(response);
   }
 }
