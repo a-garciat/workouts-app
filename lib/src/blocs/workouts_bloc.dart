@@ -18,4 +18,16 @@ class WorkoutsBloc {
   }
 }
 
-final bloc = WorkoutsBloc();
+final blocWorkouts = WorkoutsBloc();
+
+class ExercisesBloc {
+  final _repository = Repository();
+  ExerciseModel _exerciseM;
+  Exercise _exercise = null;
+  Exercise get exercise => _exercise;
+  fetchExercise(name) async{
+    _exerciseM = await _repository.fetchExercise(name);
+    _exercise = _exerciseM.exercise;
+  }
+
+}

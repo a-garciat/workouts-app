@@ -12,13 +12,13 @@ class WorkoutsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bloc.fetchAllWorkouts();
+    blocWorkouts.fetchAllWorkouts();
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista de rutinas'),
       ),
       body: StreamBuilder(
-        stream: bloc.allWorkouts,
+        stream: blocWorkouts.allWorkouts,
         builder: (context, AsyncSnapshot<ItemModel> snapshot) {
           if (snapshot.hasData) {
             return buildList(snapshot);
@@ -56,7 +56,7 @@ class WorkoutsList extends StatelessWidget {
                       .headline,
                 ),
                 //leading: Image.asset('assets/error.png'),
-                onTap: () => print(index),
+                onTap: () => workoutSelectedCallback(snapshot.data.workouts[index])
               ),
               child: InkResponse(
                 enableFeedback: true,
@@ -127,13 +127,21 @@ class WorkoutsList extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(margin: EdgeInsets.only(top: 5.0)),
-                        Text(
+                        Row(children: <Widget>[
+                          Text(
                           workout.name,
                           style: TextStyle(
                             fontSize: 25.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                          IconButton(color :Colors.green,
+                            iconSize: 80,
+                            alignment: Alignment.centerRight,
+                            icon: Icon(Icons.play_circle_filled),
+                            onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => ExercisePage(workout,0)))
+                          ),
+                        ],),
                         Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
                         Text(workout.description),
                         Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
@@ -220,3 +228,91 @@ class _MasterDetailContainerState extends State<MasterDetailContainer> {
     else return _buildTabletLayout();
   }
 }
+
+class ExercisePage extends StatelessWidget {
+  Workout _workout;
+  Exercise _exercise;
+  ExercisesBloc blocExercises ;
+  ExercisePage(Workout workout,int exer) {
+    blocExercises = ExercisesBloc();
+    _workout = workout;
+    blocExercises.fetchExercise(_workout.exercises[exer][0]);
+    _exercise = blocExercises.exercise;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    if (_workout == null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'No item selected!',
+            style: textTheme.headline,
+          ),
+          Text(
+            'Please select one on the left.',
+            style: textTheme.subhead,
+          ),
+        ],
+      );
+    }
+    Widget image;
+    if(_workout.image == ''){
+      image = Image.asset('assets/error.png');
+    } else {
+      image = Image.memory(base64.decode(_exercise.image));
+    }
+    return Scaffold(
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                    expandedHeight: 200.0,
+                    floating: false,
+                    pinned: true,
+                    elevation: 0.0,
+                    flexibleSpace: FlexibleSpaceBar(
+                        background:  image)
+                ),
+              ];
+            },
+            body: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(margin: EdgeInsets.only(top: 5.0)),
+                        Row(children: <Widget>[
+                          Text(
+                            _exercise.name,
+                            style: TextStyle(
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],),
+                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
+                        Text(_exercise.description),
+                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
+                        Text("Ejercicios",style: Theme
+                            .of(context)
+                            .textTheme
+                            .headline,),
+                      ]
+                  ),
+                ),
+              ],
+            )),
+      ),
+    );
+  }
+}
+
