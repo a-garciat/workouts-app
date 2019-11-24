@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import '../models/item_model.dart';
@@ -43,12 +42,12 @@ class WorkoutsList extends StatelessWidget {
           String name = snapshot.data.workouts[index].name;
           String imageData = snapshot.data.workouts[index].image;
           if (imageData == '') {
-             image = Image.asset('assets/error.png');
+            image = Image.asset('assets/error.png');
           }else{
-             image = Image.memory(base64.decode(imageData));
+            image = Image.memory(base64.decode(imageData));
           }
-            return GridTile(
-              header: InkResponse(
+          return GridTile(
+            header: InkResponse(
                 enableFeedback: true,
                 child: Text(name,
                   style: Theme
@@ -58,28 +57,28 @@ class WorkoutsList extends StatelessWidget {
                 ),
                 //leading: Image.asset('assets/error.png'),
                 onTap: () => workoutSelectedCallback(snapshot.data.workouts[index])
-              ),
-              child: InkResponse(
+            ),
+            child: InkResponse(
                 enableFeedback: true,
                 child: image,
-                onTap: () => workoutSelectedCallback(snapshot.data.workouts[index])
-                //onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutPage(snapshot.data.workouts[index])))
-              ),
-            );
+                onTap: () => workoutSelectedCallback(snapshot.data.workouts[index]),
+               // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutPage(snapshot.data.workouts[index])))
+            ),
+          );
         });
   }
 }
 
-  class WorkoutPage extends StatelessWidget {
-    /*Workout _workout;
+class WorkoutPage extends StatelessWidget {
+  /*Workout _workout;
     WorkoutPage( Workout workout){
       _workout = workout;
     }*/
-    WorkoutPage({@required this.workout});
-    final Workout workout;
+  WorkoutPage({@required this.workout});
+  final Workout workout;
 
   @override
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     if (workout == null) {
       return Column(
@@ -102,53 +101,45 @@ class WorkoutsList extends StatelessWidget {
     } else {
       image = Image.memory(base64.decode(workout.image));
     }
-    ExercisesBloc blocExercises = ExercisesBloc();
-    blocExercises.fetchExercise(workout.exercises[0][0]);
-    while (!blocExercises.checkReady()) {
-      print('Not ready yet');
-    }
-    Exercise exercise = blocExercises.allExercises;
-    print('EXERCISE FETCHED TO VIEW = ' + exercise.toString());
-
     return Scaffold(
-        body: SafeArea(
-          top: false,
-          bottom: false,
-          child: NestedScrollView(
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  SliverAppBar(
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
                     expandedHeight: 200.0,
                     floating: false,
                     pinned: true,
                     elevation: 0.0,
                     flexibleSpace: FlexibleSpaceBar(
                         background:  image)
-                  ),
-                ];
-              },
-              body: ListView(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
+                ),
+              ];
+            },
+            body: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(margin: EdgeInsets.only(top: 5.0)),
                         Row(children: <Widget>[
                           Text(
-                          workout.name,
-                          style: TextStyle(
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.bold,
+                            workout.name,
+                            style: TextStyle(
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
                           IconButton(color :Colors.green,
-                            iconSize: 80,
-                            alignment: Alignment.centerRight,
-                            icon: Icon(Icons.play_circle_filled),
-                            onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => ExercisePage(workout: workout,exercise: exercise)))
+                              iconSize: 80,
+                              alignment: Alignment.centerRight,
+                              icon: Icon(Icons.play_circle_filled),
+                              onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => ExercisePage(workout,0)))
                           ),
                         ],),
                         Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
@@ -168,13 +159,13 @@ class WorkoutsList extends StatelessWidget {
                           );
                         })
                       ]
-                    ),
                   ),
-                  ],
-              )),
-        ),
-      );
-    }
+                ),
+              ],
+            )),
+      ),
+    );
+  }
 }
 
 class MasterDetailContainer extends StatefulWidget {
@@ -239,83 +230,38 @@ class _MasterDetailContainerState extends State<MasterDetailContainer> {
 }
 
 class ExercisePage extends StatelessWidget {
-  ExercisePage({ @required this.workout, this.exercise});
-  final Workout workout;
-  final Exercise exercise;
+  Workout _workout;
+  int _exer;
+
+
+  ExercisePage(Workout workout,int exer) {
+    _workout = workout;
+    _exer = exer;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-    if (workout == null) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'No item selected!',
-            style: textTheme.headline,
-          ),
-          Text(
-            'Please select one on the left.',
-            style: textTheme.subhead,
-          ),
-        ],
-      );
-    }
-    Widget image;
-    if(workout.image == ''){
-      image = Image.asset('assets/error.png');
-    } else {
-      image = Image.memory(base64.decode(exercise.image));
-    }
+    blocExercise.fetchExercise(_workout.exercises[0][0]);
     return Scaffold(
-      body: SafeArea(
-        top: false,
-        bottom: false,
-        child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverAppBar(
-                    expandedHeight: 200.0,
-                    floating: false,
-                    pinned: true,
-                    elevation: 0.0,
-                    flexibleSpace: FlexibleSpaceBar(
-                        background:  image)
-                ),
-              ];
-            },
-            body: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(margin: EdgeInsets.only(top: 5.0)),
-                        Row(children: <Widget>[
-                          Text(
-                            exercise.name,
-                            style: TextStyle(
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],),
-                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
-                        Text(exercise.description),
-                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
-                        Text("Ejercicios",style: Theme
-                            .of(context)
-                            .textTheme
-                            .headline,),
-                      ]
-                  ),
-                ),
-              ],
-            )),
+      appBar: AppBar(
+        title: Text('Lista de rutinas'),
+      ),
+      body: StreamBuilder(
+        stream: blocExercise.allExercises,
+        builder: (context, AsyncSnapshot<ExerciseModel> snapshot) {
+          if (snapshot.hasData) {
+            return buildView(snapshot);
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Center(child: CircularProgressIndicator());
+        },
       ),
     );
   }
-}
 
+  Widget buildView(AsyncSnapshot<ExerciseModel> snapshot){
+    print("asdfasdfasdfasdf");
+
+  }
+}

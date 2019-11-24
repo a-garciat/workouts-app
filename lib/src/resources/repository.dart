@@ -6,5 +6,5 @@ class Repository {
   final workoutsApiProvider = WorkoutApiProvider();
   final exerciseApiProvider = ExerciseApiProvider();
   Future<ItemModel> fetchAllWorkouts() => workoutsApiProvider.fetchWorkoutList();
-  Future<ExerciseModel> fetchExercise(nombre)  =>  exerciseApiProvider.fetchExercise(nombre);
+  Future<ExerciseModel> fetchExercise(String nombre)  =>  exerciseApiProvider.fetchExercise(nombre);
 }

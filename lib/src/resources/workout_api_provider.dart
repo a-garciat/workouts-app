@@ -21,9 +21,8 @@ class ExerciseApiProvider {
     Db db = new Db("mongodb://10.0.2.2:27017/workouts");
     await db.open();
     var exercises = db.collection('exercises');
-    final response = await exercises.findOne({"name": nombre});
+    final response =  await exercises.findOne(where.eq("name", nombre));
     await db.close();
-    print ('FETCHED FROM DB = ' + response.toString());
     return ExerciseModel.fromJson(response);
   }
 }

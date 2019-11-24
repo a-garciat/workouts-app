@@ -19,31 +19,23 @@ class WorkoutsBloc {
 }
 
 final blocWorkouts = WorkoutsBloc();
+final blocExercise = ExercisesBloc();
 
 class ExercisesBloc {
   final _repository = Repository();
-  Exercise _exercisesFetcher;
-  bool _dataReady = false;
+  final _exercisesFetcher = PublishSubject<ExerciseModel>();
 
-  Exercise get allExercises => _exercisesFetcher;
 
-  dataReady() {
-    _dataReady=true;
+  Observable<ExerciseModel> get allExercises => _exercisesFetcher.stream;
+
+  fetchExercise(String nombre) async {
+    ExerciseModel itemModel = await _repository.fetchExercise(nombre);
+    _exercisesFetcher.sink.add(itemModel);
   }
 
-  dataNotReady() {
-    _dataReady=false;
-  }
-
-  bool checkReady() {
-    return _dataReady;
-  }
-
-  fetchExercise(name) async{
-    ExerciseModel exerciseM = await _repository.fetchExercise(name);
-    print ('FETCHED FROM REPOSITORY = ' + exerciseM.getExercise.name.toString());
-    _exercisesFetcher=exerciseM.getExercise;
-    dataReady();
+  dispose() {
+    _exercisesFetcher.close();
   }
 
 }
+
