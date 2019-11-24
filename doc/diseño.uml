@@ -3,19 +3,34 @@ package "Blocs"{
 	class WorkoutsBloc{
 		{field}_repository
 		{field}_workoutsFetcher
-		{method}_fetchAllWorkouts()
-		{method}_dispose()
+		{method}_fetchAllWorkouts
+		{method}_dispose
+	}
+	class ExercisesBloc{
+		{field}_repository
+		{field}_exercisesFetcher
+		{method}_fetchExercise
+		{method}_dispose
 	}
 	class ItemModel{
 		{field}_workouts
 		{method}ItemModel.fromJson
 	}
-
+	class ExerciseModel{
+		{field}exercise
+		{method}ExerciseModel.fromJson
+	}
 	class Workouts{
 		{field}_name
 		{field}_description
 		{field}_image
 		{field}_exercises
+	}
+	class Exercise{
+		{field}_name
+		{field}_description
+		{field}_image
+		{field}_video
 	}
 }
 
@@ -24,6 +39,8 @@ package "Resources"{
 	class Repository {
 		{field} workoutsApiProvider
 		{method}fetchAllWorkouts
+		{field}exerciseApiProvider
+		{method}fetchExercise
 	}
  
 }
@@ -37,8 +54,16 @@ package "UI" {
 	class WorkoutPage{
 		{field}_workout
 		{method} build
-}
+	}
+	
+	class ExercisePage{
+		{field}_workout
+		{field}_exercise
+		{method} build
+	}
 Repository --> WorkoutsBloc
+Repository --> ExercisesBloc
 WorkoutsBloc --> WorkoutsList
+ExercisesBloc --> ExercisePage
 
 @enduml
