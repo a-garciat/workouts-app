@@ -14,6 +14,7 @@ class WorkoutsList extends StatelessWidget {
   Widget build(BuildContext context) {
     blocWorkouts.fetchAllWorkouts();
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Lista de rutinas'),
       ),
@@ -33,6 +34,7 @@ class WorkoutsList extends StatelessWidget {
 
   Widget buildList(AsyncSnapshot<ItemModel> snapshot) {
     return GridView.builder(
+        padding: const EdgeInsets.all(4),
         itemCount: snapshot.data.workouts.length,
         gridDelegate:
             new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: rows),
@@ -41,28 +43,42 @@ class WorkoutsList extends StatelessWidget {
           String name = snapshot.data.workouts[index].name;
           String imageData = snapshot.data.workouts[index].image;
           if (imageData == '') {
-            image = Image.asset('assets/error.png');
+            image = Image.asset('assets/error.png', height: 35);
           } else {
-            image = Image.memory(base64.decode(imageData));
+            image = Image.memory(base64.decode(imageData), height: 35);
           }
-          return GridTile(
-            header: InkResponse(
-                enableFeedback: true,
-                child: Text(
-                  name,
-                  style: Theme.of(context).textTheme.headline,
-                ),
-                //leading: Image.asset('assets/error.png'),
-                onTap: () =>
-                    workoutSelectedCallback(snapshot.data.workouts[index])),
-            child: InkResponse(
-              enableFeedback: true,
-              child: image,
-              onTap: () =>
-                  workoutSelectedCallback(snapshot.data.workouts[index]),
-              // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutPage(snapshot.data.workouts[index])))
-            ),
-          );
+          return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                  child: Flex(direction: Axis.vertical, children: <Widget>[
+                Expanded(
+                    flex: 5,
+                    child: Material(
+                        elevation: 8.0,
+                        color: Colors.lightGreenAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(new Radius.circular(16.0)),
+                        ),
+                        child: GridTile(
+                          header: InkResponse(
+                              enableFeedback: true,
+                              child: Text(
+                                name,
+                                style: Theme.of(context).textTheme.headline,
+                              ),
+                              //leading: Image.asset('assets/error.png'),
+                              onTap: () => workoutSelectedCallback(
+                                  snapshot.data.workouts[index])),
+                          child: InkResponse(
+                            enableFeedback: true,
+                            child: image,
+                            onTap: () => workoutSelectedCallback(
+                                snapshot.data.workouts[index]),
+                            // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutPage(snapshot.data.workouts[index])))
+                          ),
+                        )))
+              ])));
         });
   }
 }
@@ -101,6 +117,7 @@ class WorkoutPage extends StatelessWidget {
       image = Image.memory(base64.decode(workout.image));
     }
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         bottom: false,
@@ -264,11 +281,14 @@ class ExercisePage extends StatelessWidget {
     _restantesParseados =
         int.parse(_restantes.replaceAll(new RegExp('[^0-9.]'), ''));
     if (_tiempo == true) {
-      _mensajeDuracion = 'Repetir durante ' + _restantesParseados.toString() + ' segundos';
+      _mensajeDuracion =
+          'Repetir durante ' + _restantesParseados.toString() + ' segundos';
     } else {
-      _mensajeDuracion = 'Realizar ' + _restantesParseados.toString() + ' repeticiones';
+      _mensajeDuracion =
+          'Realizar ' + _restantesParseados.toString() + ' repeticiones';
     }
     return Scaffold(
+      backgroundColor: Colors.white,
       body: StreamBuilder(
         stream: blocExercise.allExercises,
         builder: (context, AsyncSnapshot<ExerciseModel> snapshot) {
@@ -303,7 +323,7 @@ class ExercisePage extends StatelessWidget {
                   builder: (context) => ExercisePage(_workout, _exer + 1))));
     } else {
       button = IconButton(
-        color: Colors.blue,
+        color: Colors.green,
         iconSize: 80,
         alignment: Alignment.centerRight,
         icon: Icon(Icons.grid_on),
@@ -312,6 +332,7 @@ class ExercisePage extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         bottom: false,
