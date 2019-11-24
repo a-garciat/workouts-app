@@ -271,14 +271,14 @@ class ExercisePage extends StatelessWidget {
           iconSize: 80,
           alignment: Alignment.centerRight,
           icon: Icon(Icons.navigate_next),
-          onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => ExercisePage(_workout,_exer+1)))
+          onPressed: () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ExercisePage(_workout,_exer+1)))
       );
     }else{
       button = IconButton(color :Colors.blue,
           iconSize: 80,
           alignment: Alignment.centerRight,
           icon: Icon(Icons.grid_on),
-          onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutsList()))
+          onPressed: () =>Navigator.pop(context),
       );
     }
 

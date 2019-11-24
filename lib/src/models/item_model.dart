@@ -65,13 +65,28 @@ class ExerciseModel{
   Exercise exercise;
   ExerciseModel.fromJson(Map<String,dynamic> exercises){
     String description = "";
-    for(int i = 0; i< exercises['description'].length;i++) {
-      description = description + exercises['description'][i];
+    int desmax;
+    try{
+      desmax = exercises['description'].length;
+    }catch (e){
+      desmax=0;
+      description = 'No hay descripcion';
     }
     String image = '';
-    if (exercises['image'] != '') {
+    try{
       image = utf8.decode(exercises['image'].byteList);
+    }catch (e){
+      image = '';
     }
-    exercise = Exercise(exercises['name'], description, image);
+    for(int i = 0; i< desmax;i++) {
+      description = description + exercises['description'][i];
+    }
+    String name;
+    try{
+      name = exercises['name'];
+    }catch (e){
+      name = 'No tiene nombre ';
+    }
+    exercise = Exercise(name, description, image);
   }
 }
