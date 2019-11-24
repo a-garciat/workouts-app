@@ -241,16 +241,13 @@ class ExercisePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    blocExercise.fetchExercise(_workout.exercises[0][0]);
+    blocExercise.fetchExercise(_workout.exercises[_exer][0]);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Lista de rutinas'),
-      ),
       body: StreamBuilder(
         stream: blocExercise.allExercises,
         builder: (context, AsyncSnapshot<ExerciseModel> snapshot) {
           if (snapshot.hasData) {
-            return buildView(snapshot);
+            return buildView(snapshot,context);
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
@@ -260,8 +257,91 @@ class ExercisePage extends StatelessWidget {
     );
   }
 
-  Widget buildView(AsyncSnapshot<ExerciseModel> snapshot){
-    print("asdfasdfasdfasdf");
+  Widget buildView(AsyncSnapshot<ExerciseModel> snapshot,context){
 
+    Widget image;
+    if(snapshot.data.exercise.image == ''){
+      image = Image.asset('assets/error.png');
+    } else {
+      image = Image.memory(base64.decode(snapshot.data.exercise.image));
+    }
+    Widget button;
+    if (_exer < _workout.exercises.length -1) {
+      button = IconButton(color :Colors.green,
+          iconSize: 80,
+          alignment: Alignment.centerRight,
+          icon: Icon(Icons.navigate_next),
+          onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => ExercisePage(_workout,_exer+1)))
+      );
+    }else{
+      button = IconButton(color :Colors.blue,
+          iconSize: 80,
+          alignment: Alignment.centerRight,
+          icon: Icon(Icons.grid_on),
+          onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutsList()))
+      );
+    }
+
+    return Scaffold(
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                    expandedHeight: 200.0,
+                    floating: false,
+                    pinned: true,
+                    elevation: 0.0,
+                    flexibleSpace: FlexibleSpaceBar(
+                        background:  image)
+                ),
+              ];
+            },
+            body: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(margin: EdgeInsets.only(top: 5.0)),
+                        Row(children: <Widget>[
+                          Text(
+                            snapshot.data.exercise.name,
+                            style: TextStyle(
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          button,
+                        ],),
+                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
+                        Text(snapshot.data.exercise.description),
+                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
+                        /*Text("Ejercicios",style: Theme
+                            .of(context)
+                            .textTheme
+                            .headline,),
+                        ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount : workout.exercises.length
+                            ,itemBuilder:(context, ind){
+                          return  Text(
+                            workout.exercises[ind][0],
+                          );
+                        })*/
+                      ]
+                  ),
+                ),
+              ],
+            )),
+      ),
+    );
   }
+
 }
+
