@@ -15,3 +15,20 @@
 |          Lista: (ejercicios)          |
 |										|
 +---------------------------------------+
+
++---------------------------------------+
+|										|
+|            Cuadro: Imagen		        |
+|										|
++---------------------------------------+
+|										|
+|        Texto: Nombre ejercicio        |
+|      Botón: Siguiente ejercicio       |
+|      Texto: Duración/Repeticiones     |
+|         Texto: Descripción            |
+|					                    |
++---------------------------------------+
+|					                    |
+|          Vídeo: (ejercicio)           |
+|										|
++---------------------------------------+

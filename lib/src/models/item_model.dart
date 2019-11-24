@@ -48,10 +48,12 @@ class Exercise{
   String _name;
   String _description;
   String _image;
-  Exercise(String name, String description, String image) {
+  String _video;
+  Exercise(String name, String description, String image, String video) {
     _name = name;
     _description = description;
     _image = image;
+    _video = video;
   }
 
   String get name => _name;
@@ -59,6 +61,8 @@ class Exercise{
   String get description => _description;
 
   String get image => _image;
+
+  String get video => _video;
 }
 
 class ExerciseModel{
@@ -87,6 +91,12 @@ class ExerciseModel{
     }catch (e){
       name = 'No tiene nombre ';
     }
-    exercise = Exercise(name, description, image);
+    String video;
+    try{
+      video = exercises['video'];
+    }catch (e){
+      video = '';
+    }
+    exercise = Exercise(name, description, image, video);
   }
 }

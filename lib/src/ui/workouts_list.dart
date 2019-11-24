@@ -1,12 +1,12 @@
 import 'dart:convert';
-
+import 'package:flutube/flutube.dart';
 import 'package:flutter/material.dart';
 import '../models/item_model.dart';
 import '../blocs/workouts_bloc.dart';
 
 class WorkoutsList extends StatelessWidget {
+  WorkoutsList({@required this.workoutSelectedCallback, this.rows});
 
-  WorkoutsList({ @required this.workoutSelectedCallback, this.rows });
   final ValueChanged<Workout> workoutSelectedCallback;
   final int rows;
 
@@ -35,34 +35,32 @@ class WorkoutsList extends StatelessWidget {
     return GridView.builder(
         itemCount: snapshot.data.workouts.length,
         gridDelegate:
-        new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: rows),
-
+            new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: rows),
         itemBuilder: (BuildContext context, int index) {
           Widget image;
           String name = snapshot.data.workouts[index].name;
           String imageData = snapshot.data.workouts[index].image;
           if (imageData == '') {
             image = Image.asset('assets/error.png');
-          }else{
+          } else {
             image = Image.memory(base64.decode(imageData));
           }
           return GridTile(
             header: InkResponse(
                 enableFeedback: true,
-                child: Text(name,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .headline,
+                child: Text(
+                  name,
+                  style: Theme.of(context).textTheme.headline,
                 ),
                 //leading: Image.asset('assets/error.png'),
-                onTap: () => workoutSelectedCallback(snapshot.data.workouts[index])
-            ),
+                onTap: () =>
+                    workoutSelectedCallback(snapshot.data.workouts[index])),
             child: InkResponse(
-                enableFeedback: true,
-                child: image,
-                onTap: () => workoutSelectedCallback(snapshot.data.workouts[index]),
-               // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutPage(snapshot.data.workouts[index])))
+              enableFeedback: true,
+              child: image,
+              onTap: () =>
+                  workoutSelectedCallback(snapshot.data.workouts[index]),
+              // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutPage(snapshot.data.workouts[index])))
             ),
           );
         });
@@ -75,6 +73,7 @@ class WorkoutPage extends StatelessWidget {
       _workout = workout;
     }*/
   WorkoutPage({@required this.workout});
+
   final Workout workout;
 
   @override
@@ -85,18 +84,18 @@ class WorkoutPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'No item selected!',
+            'No se ha seleccionado una rutina',
             style: textTheme.headline,
           ),
           Text(
-            'Please select one on the left.',
+            'Selecciona una a la izquierda',
             style: textTheme.subhead,
           ),
         ],
       );
     }
     Widget image;
-    if(workout.image == ''){
+    if (workout.image == '') {
       image = Image.asset('assets/error.png');
     } else {
       image = Image.memory(base64.decode(workout.image));
@@ -114,9 +113,7 @@ class WorkoutPage extends StatelessWidget {
                     floating: false,
                     pinned: true,
                     elevation: 0.0,
-                    flexibleSpace: FlexibleSpaceBar(
-                        background:  image)
-                ),
+                    flexibleSpace: FlexibleSpaceBar(background: image)),
               ];
             },
             body: ListView(
@@ -127,39 +124,46 @@ class WorkoutPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(margin: EdgeInsets.only(top: 5.0)),
-                        Row(children: <Widget>[
-                          Text(
-                            workout.name,
-                            style: TextStyle(
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold,
+                        Row(
+                          children: <Widget>[
+                            Text(
+                              workout.name,
+                              style: TextStyle(
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          IconButton(color :Colors.green,
-                              iconSize: 80,
-                              alignment: Alignment.centerRight,
-                              icon: Icon(Icons.play_circle_filled),
-                              onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) => ExercisePage(workout,0)))
-                          ),
-                        ],),
-                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
+                            IconButton(
+                                color: Colors.green,
+                                iconSize: 80,
+                                alignment: Alignment.centerRight,
+                                icon: Icon(Icons.play_circle_filled),
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ExercisePage(workout, 0)))),
+                          ],
+                        ),
+                        Container(
+                            margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
                         Text(workout.description),
-                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
-                        Text("Ejercicios",style: Theme
-                            .of(context)
-                            .textTheme
-                            .headline,),
+                        Container(
+                            margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
+                        Text(
+                          "Ejercicios",
+                          style: Theme.of(context).textTheme.headline,
+                        ),
                         ListView.builder(
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
-                            itemCount : workout.exercises.length
-                            ,itemBuilder:(context, ind){
-                          return  Text(
-                            workout.exercises[ind][0],
-                          );
-                        })
-                      ]
-                  ),
+                            itemCount: workout.exercises.length,
+                            itemBuilder: (context, ind) {
+                              return Text(
+                                workout.exercises[ind][0],
+                              );
+                            })
+                      ]),
                 ),
               ],
             )),
@@ -170,8 +174,7 @@ class WorkoutPage extends StatelessWidget {
 
 class MasterDetailContainer extends StatefulWidget {
   @override
-  _MasterDetailContainerState createState() =>
-      _MasterDetailContainerState();
+  _MasterDetailContainerState createState() => _MasterDetailContainerState();
 }
 
 class _MasterDetailContainerState extends State<MasterDetailContainer> {
@@ -180,12 +183,16 @@ class _MasterDetailContainerState extends State<MasterDetailContainer> {
   Workout _selectedItem;
 
   Widget _buildMobileLayout() {
-    return WorkoutsList(rows: 2,
+    return WorkoutsList(
+      rows: 2,
 
       // Since we're on mobile, just push a new route for the
       // item details.
       workoutSelectedCallback: (item) {
-        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {return WorkoutPage(workout: item);}));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) {
+          return WorkoutPage(workout: item);
+        }));
       },
     );
   }
@@ -197,7 +204,8 @@ class _MasterDetailContainerState extends State<MasterDetailContainer> {
       children: <Widget>[
         Flexible(
           flex: 1,
-          child: WorkoutsList(rows: 1,
+          child: WorkoutsList(
+            rows: 1,
             // Instead of pushing a new route here, we update
             // the currently selected item, which is a part of
             // our state now.
@@ -224,17 +232,22 @@ class _MasterDetailContainerState extends State<MasterDetailContainer> {
   Widget build(BuildContext context) {
     var shortestSide = MediaQuery.of(context).size.shortestSide;
     var useMobileLayout = shortestSide < 600;
-    if (useMobileLayout) return _buildMobileLayout();
-    else return _buildTabletLayout();
+    if (useMobileLayout)
+      return _buildMobileLayout();
+    else
+      return _buildTabletLayout();
   }
 }
 
 class ExercisePage extends StatelessWidget {
   Workout _workout;
   int _exer;
+  String _restantes;
+  int _restantesParseados;
+  bool _tiempo;
+  String _mensajeDuracion;
 
-
-  ExercisePage(Workout workout,int exer) {
+  ExercisePage(Workout workout, int exer) {
     _workout = workout;
     _exer = exer;
   }
@@ -242,12 +255,25 @@ class ExercisePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     blocExercise.fetchExercise(_workout.exercises[_exer][0]);
+    _restantes = _workout.exercises[_exer][1];
+    if (_restantes.contains('rep')) {
+      _tiempo = false;
+    } else {
+      _tiempo = true;
+    }
+    _restantesParseados =
+        int.parse(_restantes.replaceAll(new RegExp('[^0-9.]'), ''));
+    if (_tiempo == true) {
+      _mensajeDuracion = 'Repetir durante ' + _restantesParseados.toString() + ' segundos';
+    } else {
+      _mensajeDuracion = 'Realizar ' + _restantesParseados.toString() + ' repeticiones';
+    }
     return Scaffold(
       body: StreamBuilder(
         stream: blocExercise.allExercises,
         builder: (context, AsyncSnapshot<ExerciseModel> snapshot) {
           if (snapshot.hasData) {
-            return buildView(snapshot,context);
+            return buildView(snapshot, context);
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
@@ -257,28 +283,31 @@ class ExercisePage extends StatelessWidget {
     );
   }
 
-  Widget buildView(AsyncSnapshot<ExerciseModel> snapshot,context){
-
+  Widget buildView(AsyncSnapshot<ExerciseModel> snapshot, context) {
     Widget image;
-    if(snapshot.data.exercise.image == ''){
+    if (snapshot.data.exercise.image == '') {
       image = Image.asset('assets/error.png');
     } else {
       image = Image.memory(base64.decode(snapshot.data.exercise.image));
     }
     Widget button;
-    if (_exer < _workout.exercises.length -1) {
-      button = IconButton(color :Colors.green,
+    if (_exer < _workout.exercises.length - 1) {
+      button = IconButton(
+          color: Colors.green,
           iconSize: 80,
           alignment: Alignment.centerRight,
           icon: Icon(Icons.navigate_next),
-          onPressed: () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ExercisePage(_workout,_exer+1)))
-      );
-    }else{
-      button = IconButton(color :Colors.blue,
-          iconSize: 80,
-          alignment: Alignment.centerRight,
-          icon: Icon(Icons.grid_on),
-          onPressed: () =>Navigator.pop(context),
+          onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ExercisePage(_workout, _exer + 1))));
+    } else {
+      button = IconButton(
+        color: Colors.blue,
+        iconSize: 80,
+        alignment: Alignment.centerRight,
+        icon: Icon(Icons.grid_on),
+        onPressed: () => Navigator.pop(context),
       );
     }
 
@@ -295,9 +324,7 @@ class ExercisePage extends StatelessWidget {
                     floating: false,
                     pinned: true,
                     elevation: 0.0,
-                    flexibleSpace: FlexibleSpaceBar(
-                        background:  image)
-                ),
+                    flexibleSpace: FlexibleSpaceBar(background: image)),
               ];
             },
             body: ListView(
@@ -308,19 +335,44 @@ class ExercisePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(margin: EdgeInsets.only(top: 5.0)),
-                        Row(children: <Widget>[
-                          Text(
-                            snapshot.data.exercise.name,
-                            style: TextStyle(
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold,
+                        Row(
+                          children: <Widget>[
+                            Text(
+                              snapshot.data.exercise.name,
+                              style: TextStyle(
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          button,
-                        ],),
-                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
+                            button,
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Text(
+                              _mensajeDuracion,
+                              style: TextStyle(
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                            margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
                         Text(snapshot.data.exercise.description),
-                        Container(margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
+                        Container(
+                            margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
+                        FluTube(
+                          snapshot.data.exercise.video,
+                          aspectRatio: 16 / 9,
+                          autoPlay: true,
+                          looping: true,
+                          onVideoStart: () {},
+                          onVideoEnd: () {},
+                        ),
+                        Container(
+                            margin: EdgeInsets.only(top: 15.0, bottom: 8.0)),
                         /*Text("Ejercicios",style: Theme
                             .of(context)
                             .textTheme
@@ -334,14 +386,11 @@ class ExercisePage extends StatelessWidget {
                             workout.exercises[ind][0],
                           );
                         })*/
-                      ]
-                  ),
+                      ]),
                 ),
               ],
             )),
       ),
     );
   }
-
 }
-
